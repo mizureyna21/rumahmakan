@@ -1021,51 +1021,201 @@ function tanggal_id(string $dt): string
         }
 
         /* ══════════════════════════════════════════════
-           STATUS SELECT – Pill-style dropdown
+           STATUS STEPPER
         ══════════════════════════════════════════════ */
-        .status-select {
-            appearance: none;
-            padding: .25rem .85rem;
-            padding-right: 1.6rem;
+        .status-stepper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: .3rem;
+            min-width: 130px;
+        }
+        .stepper-dots {
+            display: flex;
+            align-items: center;
+            gap: 0;
+        }
+        .stepper-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--air-hairline);
+            border: 2px solid var(--air-hairline);
+            flex-shrink: 0;
+            transition: background var(--air-transition), border-color var(--air-transition);
+        }
+        .stepper-dot.done {
+            background: var(--air-primary);
+            border-color: var(--air-primary);
+        }
+        .stepper-line {
+            width: 20px;
+            height: 2px;
+            background: var(--air-hairline);
+            flex-shrink: 0;
+            transition: background var(--air-transition);
+        }
+        .stepper-line.done {
+            background: var(--air-primary);
+        }
+        .stepper-label {
+            font-size: .72rem;
+            font-weight: 700;
+            letter-spacing: .02em;
+            padding: .15rem .6rem;
             border-radius: var(--air-radius-full);
             border: 1px solid;
+        }
+        .stepper-label.pending  { background:#fff7ed; color:#c2410c; border-color:#fed7aa; }
+        .stepper-label.dimasak  { background:#fefce8; color:#a16207; border-color:#fde047; }
+        .stepper-label.dikirim  { background:#eff6ff; color:#1d4ed8; border-color:#bfdbfe; }
+        .stepper-label.selesai  { background:#f0fdf4; color:#15803d; border-color:#bbf7d0; }
+        .stepper-actions {
+            display: flex;
+            align-items: center;
+            gap: .3rem;
+        }
+        .btn-next-status {
+            display: inline-flex;
+            align-items: center;
+            gap: .25rem;
+            padding: .3rem .7rem;
+            background: var(--air-primary);
+            color: #fff;
+            border: none;
+            border-radius: var(--air-radius-sm);
             font-family: inherit;
-            font-size: .75rem;
+            font-size: .72rem;
             font-weight: 600;
             cursor: pointer;
+            transition: background var(--air-transition), opacity var(--air-transition);
+            min-height: 30px;
+        }
+        .btn-next-status:hover { background: var(--air-primary-active); }
+        .btn-next-status:disabled { opacity: .5; cursor: not-allowed; }
+        .btn-ubah-status {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border: 1px solid var(--air-hairline);
+            border-radius: var(--air-radius-sm);
+            background: var(--air-canvas);
+            color: var(--air-muted);
+            font-size: .8rem;
+            cursor: pointer;
+            transition: border-color var(--air-transition), color var(--air-transition);
+            padding: 0;
+            font-family: inherit;
+        }
+        .btn-ubah-status:hover { border-color: var(--air-ink); color: var(--air-ink); }
+
+        /* ══════════════════════════════════════════════
+           MINI MODAL — Konfirmasi & Ubah Status Manual
+        ══════════════════════════════════════════════ */
+        .mini-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,.45);
+            z-index: 200;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        .mini-modal-overlay.active { display: flex; }
+        .mini-modal {
+            background: var(--air-canvas);
+            border-radius: var(--air-radius-md);
+            padding: 1.5rem;
+            max-width: 360px;
+            width: 100%;
+            box-shadow: var(--air-shadow-hover);
+            animation: modalIn .15s ease;
+        }
+        .mini-modal__icon { font-size: 2rem; margin-bottom: .5rem; text-align: center; }
+        .mini-modal__title { font-size: 1rem; font-weight: 700; margin-bottom: .25rem; text-align: center; }
+        .mini-modal__desc  { font-size: .85rem; color: var(--air-muted); margin-bottom: 1.25rem; text-align: center; }
+        .status-option-list {
+            display: flex;
+            flex-direction: column;
+            gap: .5rem;
+            margin-bottom: 1rem;
+        }
+        .status-option-btn {
+            display: flex;
+            align-items: center;
+            gap: .65rem;
+            padding: .65rem 1rem;
+            border: 2px solid var(--air-hairline);
+            border-radius: var(--air-radius-sm);
+            background: var(--air-canvas);
+            font-family: inherit;
+            font-size: .875rem;
+            font-weight: 500;
+            cursor: pointer;
+            text-align: left;
+            transition: border-color var(--air-transition), background var(--air-transition);
+            min-height: 48px;
+        }
+        .status-option-btn:hover    { border-color: var(--air-ink); }
+        .status-option-btn.aktif    { border-color: var(--air-primary); background: #fff5f7; font-weight: 700; }
+        .status-option-btn .opt-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+        .opt-dot.pending  { background: #c2410c; }
+        .opt-dot.dimasak  { background: #a16207; }
+        .opt-dot.dikirim  { background: #1d4ed8; }
+        .opt-dot.selesai  { background: #15803d; }
+        .mini-modal__cancel {
+            display: block;
+            width: 100%;
+            padding: .6rem;
+            border: 1px solid var(--air-hairline);
+            border-radius: var(--air-radius-sm);
+            background: transparent;
+            font-family: inherit;
+            font-size: .875rem;
+            color: var(--air-muted);
+            cursor: pointer;
             transition: border-color var(--air-transition);
-            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5'%3E%3Cpath d='M0 0l4 5 4-5z' fill='%236a6a6a'/%3E%3C/svg%3E") no-repeat right .55rem center;
-            background-size: 8px;
-            outline: none;
+            min-height: 44px;
         }
-
-        .status-select:focus {
-            border-width: 2px;
+        .mini-modal__cancel:hover { border-color: var(--air-ink); color: var(--air-ink); }
+        .mini-modal__confirm {
+            display: flex;
+            gap: .5rem;
+            margin-top: .75rem;
         }
-
-        .status-select.pending {
-            background-color: #fff7ed;
-            color: #c2410c;
-            border-color: #fed7aa;
+        .mini-modal__confirm .btn-confirm-ya {
+            flex: 1;
+            padding: .65rem;
+            background: var(--air-primary);
+            color: #fff;
+            border: none;
+            border-radius: var(--air-radius-sm);
+            font-family: inherit;
+            font-size: .875rem;
+            font-weight: 600;
+            cursor: pointer;
+            min-height: 44px;
+            transition: background var(--air-transition);
         }
-
-        .status-select.dimasak {
-            background-color: #fefce8;
-            color: #a16207;
-            border-color: #fde047;
+        .mini-modal__confirm .btn-confirm-ya:hover { background: var(--air-primary-active); }
+        .mini-modal__confirm .btn-confirm-tidak {
+            flex: 1;
+            padding: .65rem;
+            background: var(--air-canvas);
+            color: var(--air-ink);
+            border: 1px solid var(--air-hairline);
+            border-radius: var(--air-radius-sm);
+            font-family: inherit;
+            font-size: .875rem;
+            font-weight: 500;
+            cursor: pointer;
+            min-height: 44px;
+            transition: border-color var(--air-transition);
         }
-
-        .status-select.dikirim {
-            background-color: #eff6ff;
-            color: #1d4ed8;
-            border-color: #bfdbfe;
-        }
-
-        .status-select.selesai {
-            background-color: #f0fdf4;
-            color: #15803d;
-            border-color: #bbf7d0;
-        }
+        .mini-modal__confirm .btn-confirm-tidak:hover { border-color: var(--air-ink); }
 
         /* ══════════════════════════════════════════════
            PAYMENT BADGES
@@ -1199,16 +1349,163 @@ function tanggal_id(string $dt): string
         }
 
         /* ══════════════════════════════════════════════
+           BOTTOM NAV – mobile replacement for sidebar
+        ══════════════════════════════════════════════ */
+        .bottom-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: var(--air-canvas);
+            border-top: 1px solid var(--air-hairline);
+            box-shadow: 0 -2px 8px rgba(0,0,0,.06);
+            height: 64px;
+            flex-shrink: 0;
+        }
+        .bottom-nav__inner {
+            max-width: 1280px;
+            margin: 0 auto;
+            height: 100%;
+            display: flex;
+            align-items: stretch;
+        }
+        .bottom-nav__item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            padding: 6px 4px;
+            color: var(--air-muted);
+            font-size: .62rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: color var(--air-transition);
+            position: relative;
+        }
+        .bottom-nav__item.active {
+            color: var(--air-primary);
+        }
+        .bottom-nav__item.active::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 20%;
+            right: 20%;
+            height: 2px;
+            background: var(--air-primary);
+            border-radius: 0 0 2px 2px;
+        }
+        .bottom-nav__icon {
+            font-size: 1.2rem;
+            line-height: 1;
+        }
+        .bottom-nav__label {
+            line-height: 1.1;
+        }
+
+        /* ══════════════════════════════════════════════
            RESPONSIVE
         ══════════════════════════════════════════════ */
         @media (max-width: 840px) {
             .sidebar { display: none; }
+            .main-panel { padding-bottom: 64px; }
             .content { padding: var(--air-space-lg); }
             .topbar  { padding: 0 var(--air-space-lg); }
+            .bottom-nav { display: flex; }
         }
 
-        @media (max-width: 520px) {
-            .stats-grid { grid-template-columns: 1fr 1fr; }
+        @media (max-width: 600px) {
+            .topbar__breadcrumb { display: none; }
+            .badge-live { display: none; }
+            .topbar .btn-outline { font-size: .8rem; padding: .4rem .8rem; }
+
+            .periode-filter {
+                flex-direction: column;
+                align-items: stretch;
+                gap: var(--air-space-sm);
+            }
+            .periode-filter .filter-group { width: 100%; }
+            .periode-filter .form-select { width: 100%; min-width: 0; }
+            .periode-filter .btn-outline {
+                width: 100%;
+                text-align: center;
+                justify-content: center;
+                box-sizing: border-box;
+            }
+
+            .table-wrap { overflow-x: visible; }
+            .orders-table,
+            .orders-table tbody,
+            .orders-table tbody tr { display: block; }
+            .orders-table thead { display: none; }
+            .orders-table tbody tr {
+                border: 1px solid var(--air-hairline);
+                border-radius: var(--air-radius-md);
+                margin-bottom: var(--air-space-base);
+                padding: var(--air-space-base);
+                background: var(--air-canvas);
+            }
+            .orders-table tbody tr:last-child { margin-bottom: 0; }
+            .orders-table tbody td {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: .45rem 0;
+                border-bottom: 1px solid var(--air-hairline-soft);
+                text-align: right;
+                gap: .5rem;
+            }
+            .orders-table tbody td:last-child { border-bottom: none; }
+            .orders-table tbody td::before {
+                content: attr(data-label);
+                font-weight: 600;
+                font-size: .7rem;
+                color: var(--air-muted);
+                text-transform: uppercase;
+                letter-spacing: .04em;
+                white-space: nowrap;
+                flex-shrink: 0;
+            }
+            .orders-table tbody td.center { text-align: right; justify-content: space-between; }
+            .orders-table tbody td.right  { text-align: right; }
+            .orders-table tbody td .cell-id { display: inline-flex; }
+            .orders-table tbody td .cell-date strong { display: inline; }
+            .orders-table tbody td .cell-date br { display: none; }
+            .orders-table tbody td .stepper-dots { transform: scale(.85); transform-origin: center; }
+            .orders-table tbody td .stepper-label { font-size: .65rem; }
+            .orders-table tbody td .btn-next-status { font-size: .65rem; padding: .25rem .55rem; min-height: 28px; }
+
+            .table-card__footer {
+                flex-direction: column;
+                text-align: center;
+                gap: .5rem;
+            }
+            .tfoot-total { justify-content: center; }
+
+            .content { padding: var(--air-space-base); }
+            .page-heading h1 { font-size: 1.15rem; }
+        }
+
+        @media (max-width: 480px) {
+            .filter-pill {
+                padding: .3rem .7rem;
+                font-size: .78rem;
+            }
+            .filter-pill .pill-count { display: none; }
+            .page-heading h1 { font-size: 1rem; }
+            .stat-value { font-size: 1.1rem; }
+        }
+
+        @media (max-width: 400px) {
+            .stats-grid { grid-template-columns: 1fr; }
+            .stat-value {
+                white-space: normal;
+                word-break: break-word;
+            }
         }
     </style>
 </head>
@@ -1580,15 +1877,46 @@ function tanggal_id(string $dt): string
 
                                         <!-- Status -->
                                         <td class="center">
-                                            <select class="status-select <?= $st_cls ?>"
-                                                id="sel-status-<?= $row['id_pesanan'] ?>"
-                                                data-id="<?= (int) $row['id_pesanan'] ?>" onchange="ubahStatus(this)"
-                                                aria-label="Status pesanan">
-                                                <?php foreach (['Pending', 'Dimasak', 'Dikirim', 'Selesai'] as $opt): ?>
-                                                    <option value="<?= $opt ?>" <?= $st === $opt ? 'selected' : '' ?>><?= $opt ?>
-                                                    </option>
-                                                <?php endforeach; ?>
-                                            </select>
+                                            <?php
+                                            $status_steps = ['Pending', 'Dimasak', 'Dikirim', 'Selesai'];
+                                            $idx_sekarang = array_search($st, $status_steps);
+                                            $status_berikutnya = $status_steps[$idx_sekarang + 1] ?? null;
+                                            ?>
+                                            <div class="status-stepper" id="stepper-<?= $row['id_pesanan'] ?>"
+                                                 data-id="<?= (int) $row['id_pesanan'] ?>"
+                                                 data-status="<?= htmlspecialchars($st) ?>">
+
+                                                <div class="stepper-dots">
+                                                    <?php foreach ($status_steps as $i => $step): ?>
+                                                    <span class="stepper-dot <?= $i <= $idx_sekarang ? 'done' : '' ?>"
+                                                          title="<?= $step ?>"></span>
+                                                    <?php if ($i < 3): ?><span class="stepper-line <?= $i < $idx_sekarang ? 'done' : '' ?>"></span><?php endif; ?>
+                                                    <?php endforeach; ?>
+                                                </div>
+
+                                                <span class="stepper-label <?= $st_cls ?>"><?= $st === 'Selesai' ? '✅ ' : '' ?><?= htmlspecialchars($st) ?></span>
+
+                                                <div class="stepper-actions">
+                                                    <?php if ($status_berikutnya): ?>
+                                                    <button type="button"
+                                                            class="btn-next-status"
+                                                            data-id="<?= (int) $row['id_pesanan'] ?>"
+                                                            data-next="<?= htmlspecialchars($status_berikutnya) ?>"
+                                                            onclick="konfirmasiMaju(this)"
+                                                            id="btn-next-<?= $row['id_pesanan'] ?>">
+                                                        ▶ <?= htmlspecialchars($status_berikutnya) ?>
+                                                    </button>
+                                                    <?php endif; ?>
+                                                    <button type="button"
+                                                            class="btn-ubah-status"
+                                                            data-id="<?= (int) $row['id_pesanan'] ?>"
+                                                            data-status="<?= htmlspecialchars($st) ?>"
+                                                            onclick="bukaUbahStatus(this)"
+                                                            title="Ubah status manual"
+                                                            id="btn-ubah-<?= $row['id_pesanan'] ?>">⚙</button>
+                                                </div>
+
+                                            </div>
                                         </td>
 
                                     </tr>
@@ -1618,6 +1946,40 @@ function tanggal_id(string $dt): string
 
     </div><!-- /.main-panel -->
 
+    <!-- MODAL KONFIRMASI MAJU STATUS -->
+    <div class="mini-modal-overlay" id="modal-konfirmasi-status" role="dialog" aria-modal="true">
+        <div class="mini-modal">
+            <div class="mini-modal__icon">🚀</div>
+            <div class="mini-modal__title" id="modal-konfirmasi-title">Ubah ke Dimasak?</div>
+            <div class="mini-modal__desc" id="modal-konfirmasi-desc">
+                Pesanan <strong id="modal-konfirmasi-id">#00000</strong> akan dipindah dari
+                <strong id="modal-dari"></strong> ke <strong id="modal-ke"></strong>.
+            </div>
+            <div class="mini-modal__confirm">
+                <button class="btn-confirm-tidak" onclick="tutupModalStatus()">Batal</button>
+                <button class="btn-confirm-ya" id="btn-konfirmasi-ya" onclick="eksekusiMaju()">Ya, Ubah</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL UBAH STATUS MANUAL -->
+    <div class="mini-modal-overlay" id="modal-ubah-status" role="dialog" aria-modal="true">
+        <div class="mini-modal">
+            <div class="mini-modal__icon">⚙️</div>
+            <div class="mini-modal__title">Ubah Status Manual</div>
+            <div class="mini-modal__desc">
+                Pesanan <strong id="modal-ubah-id">#00000</strong> — pilih status baru:
+            </div>
+            <div class="status-option-list">
+                <button class="status-option-btn" data-val="Pending" onclick="pilihStatusManual(this)"><span class="opt-dot pending"></span>Pending</button>
+                <button class="status-option-btn" data-val="Dimasak" onclick="pilihStatusManual(this)"><span class="opt-dot dimasak"></span>Dimasak</button>
+                <button class="status-option-btn" data-val="Dikirim" onclick="pilihStatusManual(this)"><span class="opt-dot dikirim"></span>Dikirim</button>
+                <button class="status-option-btn" data-val="Selesai" onclick="pilihStatusManual(this)"><span class="opt-dot selesai"></span>Selesai</button>
+            </div>
+            <button class="mini-modal__cancel" onclick="tutupModalUbah()">Batal</button>
+        </div>
+    </div>
+
     <!-- Modal Bukti Transfer -->
     <div class="modal-overlay" id="modal-bukti" role="dialog" aria-modal="true" aria-label="Bukti Transfer">
         <div class="modal-card">
@@ -1632,18 +1994,72 @@ function tanggal_id(string $dt): string
     </div>
 
     <script>
-        /* ── ubahStatus: kirim update via fetch, update warna dropdown ── */
-        async function ubahStatus(sel) {
-            const id = sel.dataset.id;
-            const status = sel.value;
+        /* ── State sementara untuk modal ── */
+        let _pendingId = null;
+        let _pendingNext = null;
+        let _pendingDari = null;
+
+        /* ── Tombol "▶ Status Berikutnya" diklik ── */
+        function konfirmasiMaju(btn) {
+            _pendingId   = btn.dataset.id;
+            _pendingNext = btn.dataset.next;
+            const stepper = document.getElementById('stepper-' + _pendingId);
+            _pendingDari = stepper.dataset.status;
+
+            document.getElementById('modal-konfirmasi-title').textContent = 'Ubah ke ' + _pendingNext + '?';
+            document.getElementById('modal-konfirmasi-id').textContent = '#' + String(_pendingId).padStart(5, '0');
+            document.getElementById('modal-dari').textContent = _pendingDari;
+            document.getElementById('modal-ke').textContent = _pendingNext;
+            document.getElementById('modal-konfirmasi-status').classList.add('active');
+        }
+
+        /* ── Tombol "Ya, Ubah" di modal konfirmasi ── */
+        async function eksekusiMaju() {
+            tutupModalStatus();
+            if (!_pendingId || !_pendingNext) return;
+            await kirimStatus(_pendingId, _pendingNext);
+            _pendingId = _pendingNext = _pendingDari = null;
+        }
+
+        /* ── Tombol ⚙ Ubah manual ── */
+        function bukaUbahStatus(btn) {
+            const id = btn.dataset.id;
+            const statusSekarang = btn.dataset.status;
+            document.getElementById('modal-ubah-id').textContent = '#' + String(id).padStart(5, '0');
+            document.getElementById('modal-ubah-status').dataset.targetId = id;
+
+            document.querySelectorAll('.status-option-btn').forEach(b => {
+                b.classList.toggle('aktif', b.dataset.val === statusSekarang);
+            });
+            document.getElementById('modal-ubah-status').classList.add('active');
+        }
+
+        /* ── Pilih status di modal ubah manual ── */
+        async function pilihStatusManual(btn) {
+            const statusBaru = btn.dataset.val;
+            const id = document.getElementById('modal-ubah-status').dataset.targetId;
+            tutupModalUbah();
+            await kirimStatus(id, statusBaru);
+        }
+
+        /* ── Tutup modal ── */
+        function tutupModalStatus() { document.getElementById('modal-konfirmasi-status').classList.remove('active'); }
+        function tutupModalUbah()   { document.getElementById('modal-ubah-status').classList.remove('active'); }
+
+        /* ── Kirim ke proses_status.php (AJAX) ── */
+        async function kirimStatus(id, statusBaru) {
+            const statusSteps = ['Pending', 'Dimasak', 'Dikirim', 'Selesai'];
             const klsMap = { Pending: 'pending', Dimasak: 'dimasak', Dikirim: 'dikirim', Selesai: 'selesai' };
+
+            const btnNext = document.getElementById('btn-next-' + id);
+            if (btnNext) btnNext.disabled = true;
 
             try {
                 const fd = new FormData();
                 fd.append('id_pesanan', id);
-                fd.append('status', status);
+                fd.append('status', statusBaru);
 
-                const res = await fetch('proses_status.php', {
+                const res  = await fetch('proses_status.php', {
                     method: 'POST',
                     headers: { 'X-Requested-With': 'XMLHttpRequest' },
                     body: fd
@@ -1651,21 +2067,60 @@ function tanggal_id(string $dt): string
                 const data = await res.json();
 
                 if (data.ok) {
-                    sel.className = 'status-select ' + (klsMap[status] ?? '');
+                    /* Update stepper di DOM */
+                    const stepper = document.getElementById('stepper-' + id);
+                    const idxBaru = statusSteps.indexOf(statusBaru);
+                    const statusBerikutnya = statusSteps[idxBaru + 1] ?? null;
+
+                    stepper.dataset.status = statusBaru;
+
+                    stepper.querySelectorAll('.stepper-dot').forEach((dot, i) => {
+                        dot.classList.toggle('done', i <= idxBaru);
+                    });
+                    stepper.querySelectorAll('.stepper-line').forEach((line, i) => {
+                        line.classList.toggle('done', i < idxBaru);
+                    });
+
+                    const label = stepper.querySelector('.stepper-label');
+                    label.className = 'stepper-label ' + (klsMap[statusBaru] ?? '');
+                    label.textContent = (statusBaru === 'Selesai' ? '✅ ' : '') + statusBaru;
+
+                    const actionsDiv = stepper.querySelector('.stepper-actions');
+                    const oldBtnNext = stepper.querySelector('.btn-next-status');
+                    if (oldBtnNext) oldBtnNext.remove();
+                    if (statusBerikutnya) {
+                        const newBtn = document.createElement('button');
+                        newBtn.type = 'button';
+                        newBtn.className = 'btn-next-status';
+                        newBtn.dataset.id = id;
+                        newBtn.dataset.next = statusBerikutnya;
+                        newBtn.id = 'btn-next-' + id;
+                        newBtn.setAttribute('onclick', 'konfirmasiMaju(this)');
+                        newBtn.textContent = '▶ ' + statusBerikutnya;
+                        actionsDiv.prepend(newBtn);
+                    }
+
+                    const btnUbah = document.getElementById('btn-ubah-' + id);
+                    if (btnUbah) btnUbah.dataset.status = statusBaru;
+
                     showFlash(data.message, 'success');
                 } else {
                     showFlash(data.message || 'Gagal memperbarui.', 'error');
-                    sel.value = sel.dataset.prev ?? sel.value;
                 }
-                sel.dataset.prev = status;
             } catch (e) {
                 showFlash('Kesalahan koneksi. Coba lagi.', 'error');
+            } finally {
+                const b = document.getElementById('btn-next-' + id);
+                if (b) b.disabled = false;
             }
         }
 
-        /* ── Simpan nilai awal select saat halaman dimuat ── */
-        document.querySelectorAll('.status-select').forEach(s => {
-            s.dataset.prev = s.value;
+        /* ── Tutup modal klik di luar ── */
+        document.getElementById('modal-konfirmasi-status').addEventListener('click', function(e) {
+            if (e.target === this) tutupModalStatus();
+        });
+        document.getElementById('modal-ubah-status').addEventListener('click', function(e) {
+            if (e.target === this) tutupModalUbah();
         });
 
         /* ── Helper: tampilkan flash message ── */
@@ -1708,7 +2163,45 @@ function tanggal_id(string $dt): string
         document.addEventListener('keydown', function (e) {
             if (e.key === 'Escape') tutupModal();
         });
+
+        /* ── Set data-label pada td dari thead th (untuk card layout mobile) ── */
+        (function () {
+            var table = document.querySelector('.orders-table');
+            if (!table) return;
+            var headers = [];
+            var ths = table.querySelectorAll('thead th');
+            for (var i = 0; i < ths.length; i++) {
+                headers.push(ths[i].textContent.trim());
+            }
+            var rows = table.querySelectorAll('tbody tr');
+            for (var r = 0; r < rows.length; r++) {
+                var tds = rows[r].querySelectorAll('td');
+                for (var c = 0; c < tds.length && c < headers.length; c++) {
+                    tds[c].setAttribute('data-label', headers[c]);
+                }
+            }
+        })();
     </script>
+
+    <!-- ══════════════════════════════════════════════════════════
+     BOTTOM NAV – mobile (≤840px replaces sidebar)
+    ══════════════════════════════════════════════════════════ -->
+    <nav class="bottom-nav" aria-label="Navigasi mobile">
+        <div class="bottom-nav__inner">
+            <a href="dashboard.php" class="bottom-nav__item active" id="nav-mobile-dashboard">
+                <span class="bottom-nav__icon">📊</span>
+                <span class="bottom-nav__label">Dashboard</span>
+            </a>
+            <a href="kelola_menu.php" class="bottom-nav__item" id="nav-mobile-kelola">
+                <span class="bottom-nav__icon">🍴</span>
+                <span class="bottom-nav__label">Menu</span>
+            </a>
+            <a href="index.php" class="bottom-nav__item" id="nav-mobile-katalog">
+                <span class="bottom-nav__icon">🛍️</span>
+                <span class="bottom-nav__label">Katalog</span>
+            </a>
+        </div>
+    </nav>
 
 </body>
 

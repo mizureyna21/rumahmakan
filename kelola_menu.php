@@ -206,7 +206,72 @@ if (isset($_GET['edit'])) {
            RESPONSIVE
         ══════════════════════════════════════════════ */
         @media(max-width:900px){.layout-grid{grid-template-columns:1fr}.form-card{position:static}}
-        @media(max-width:840px){.sidebar{display:none}.content{padding:var(--air-space-lg)}.topbar{padding:0 var(--air-space-lg)}}
+
+        /* ══════════════════════════════════════════════
+           BOTTOM NAV – mobile (same pattern as dashboard.php)
+        ══════════════════════════════════════════════ */
+        .bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:100;background:var(--air-canvas);border-top:1px solid var(--air-hairline);box-shadow:0 -2px 8px rgba(0,0,0,.06);height:64px;flex-shrink:0}
+        .bottom-nav__inner{max-width:1280px;margin:0 auto;height:100%;display:flex;align-items:stretch}
+        .bottom-nav__item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:6px 4px;color:var(--air-muted);font-size:.62rem;font-weight:600;text-decoration:none;transition:color var(--air-transition);position:relative}
+        .bottom-nav__item.active{color:var(--air-primary)}
+        .bottom-nav__item.active::after{content:'';position:absolute;top:0;left:20%;right:20%;height:2px;background:var(--air-primary);border-radius:0 0 2px 2px}
+        .bottom-nav__icon{font-size:1.2rem;line-height:1}
+        .bottom-nav__label{line-height:1.1}
+
+        /* ══════════════════════════════════════════════
+           FAB – Floating Action Button "＋ Tambah Menu"
+        ══════════════════════════════════════════════ */
+        .fab{display:none;position:fixed;bottom:80px;right:var(--air-space-base);z-index:99;align-items:center;gap:.45rem;padding:.7rem 1.15rem;border-radius:var(--air-radius-full);background:var(--air-primary);color:var(--air-on-primary);border:none;font-family:inherit;font-size:.85rem;font-weight:600;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.25);transition:background var(--air-transition),transform var(--air-transition);line-height:1}
+        .fab:hover{background:var(--air-primary-active);transform:scale(1.05)}
+        .fab:active{transform:scale(.95)}
+        .fab__icon{font-size:1.1rem;flex-shrink:0}
+
+        /* ══════════════════════════════════════════════
+           RESPONSIVE ADDITIONS
+        ══════════════════════════════════════════════ */
+        @media(max-width:900px){.fab{display:flex}}
+        @media(max-width:840px){.sidebar{display:none}.main-panel{padding-bottom:64px}.content{padding:var(--air-space-lg)}.topbar{padding:0 var(--air-space-lg)}.bottom-nav{display:flex}.fab{bottom:calc(64px + var(--air-space-base))}}
+
+        @media(max-width:640px){
+        .menu-table,.menu-table tbody,.menu-table tbody tr{display:block}
+        .menu-table thead{display:none}
+        .menu-table tbody tr{border:1px solid var(--air-hairline);border-radius:var(--air-radius-md);margin-bottom:var(--air-space-base);padding:var(--air-space-base);background:var(--air-canvas)}
+        .menu-table tbody tr:last-child{margin-bottom:0}
+        .menu-table tbody td{display:flex;justify-content:space-between;align-items:center;padding:.45rem 0;border-bottom:1px solid var(--air-hairline-soft);text-align:right;gap:.5rem;flex-wrap:wrap}
+        .menu-table tbody td:last-child{border-bottom:none}
+        .menu-table tbody td:nth-child(1)::before{content:"No: ";font-weight:600;font-size:.7rem;color:var(--air-muted);text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;flex-shrink:0}
+        .menu-table tbody td:nth-child(2){justify-content:center;gap:.75rem}
+        .menu-table tbody td:nth-child(2)::before{display:none}
+        .menu-table tbody td:nth-child(2) .thumb,.menu-table tbody td:nth-child(2) .thumb-ph{width:64px;height:64px}
+        .menu-table tbody td:nth-child(3)::before{content:"Nama: ";font-weight:600;font-size:.7rem;color:var(--air-muted);text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;flex-shrink:0}
+        .menu-table tbody td:nth-child(3) .cell-name small{display:inline;margin-left:.3rem}
+        .menu-table tbody td:nth-child(4)::before{content:"Kategori: ";font-weight:600;font-size:.7rem;color:var(--air-muted);text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;flex-shrink:0}
+        .menu-table tbody td:nth-child(5)::before{content:"Harga: ";font-weight:600;font-size:.7rem;color:var(--air-muted);text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;flex-shrink:0}
+        .menu-table tbody td:nth-child(6)::before{content:"Stok: ";font-weight:600;font-size:.7rem;color:var(--air-muted);text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;flex-shrink:0}
+        .menu-table tbody td:nth-child(7)::before{content:"Aksi";font-weight:600;font-size:.7rem;color:var(--air-muted);text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;flex-shrink:0;align-self:flex-start;padding-top:.3rem}
+        .menu-table tbody td:nth-child(7){flex-direction:column;align-items:stretch;gap:.5rem}
+        .menu-table tbody td .action-btns{display:flex;gap:.5rem;width:100%}
+        .menu-table tbody td .action-btns a,.menu-table tbody td .action-btns form{flex:1;display:flex}
+        .menu-table tbody td .btn-edit,.menu-table tbody td .btn-del{flex:1;justify-content:center;padding:.6rem .5rem;min-height:44px;font-size:.82rem}
+        .table-card__header{flex-direction:column;gap:.5rem;align-items:flex-start}
+        .table-card__count{align-self:flex-start}
+        .page-heading h1{font-size:1.15rem}
+        }
+
+        @media(max-width:600px){
+        .topbar__breadcrumb{display:none}
+        .topbar .btn-outline-sm{padding:.45rem .6rem;font-size:.75rem}
+        .foto-preview,.foto-preview-ph{height:180px}
+        .form-body{padding:1rem}
+        .form-group{margin-bottom:1.25rem}
+        input[type=file].form-control{min-height:44px;padding-top:.65rem;padding-bottom:.65rem}
+        .content{padding:var(--air-space-base)}
+        .page-heading h1{font-size:1.15rem}
+        }
+
+        @media(max-width:480px){
+        .page-heading h1{font-size:1rem}
+        }
     </style>
 </head>
 <body>
@@ -427,7 +492,47 @@ function previewFoto(input) {
     else document.querySelector('.form-group').prepend(newImg);
   }
 }
+
+/* ── FAB: scroll ke form saat klik "Tambah Menu" ── */
+document.getElementById('fab-tambah')?.addEventListener('click', function () {
+  const form = document.getElementById('form-card-menu');
+  if (form) form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
+
+/* ── Auto-scroll ke form saat edit (detect ?edit= di URL) ── */
+if (window.location.search.indexOf('edit=') !== -1) {
+  setTimeout(function () {
+    const form = document.getElementById('form-card-menu');
+    if (form) form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 350);
+}
 </script>
+
+<!-- ══════════════════════════════════════════════════════════
+ BOTTOM NAV – mobile (≤840px replaces sidebar)
+══════════════════════════════════════════════════════════ -->
+<nav class="bottom-nav" aria-label="Navigasi mobile">
+  <div class="bottom-nav__inner">
+    <a href="dashboard.php" class="bottom-nav__item" id="nav-mobile-dashboard">
+      <span class="bottom-nav__icon">📊</span><span class="bottom-nav__label">Dashboard</span>
+    </a>
+    <a href="index.php" class="bottom-nav__item" id="nav-mobile-katalog">
+      <span class="bottom-nav__icon">🛍️</span><span class="bottom-nav__label">Katalog</span>
+    </a>
+    <a href="kelola_menu.php" class="bottom-nav__item active" id="nav-mobile-kelola">
+      <span class="bottom-nav__icon">🍴</span><span class="bottom-nav__label">Menu</span>
+    </a>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════════════════════════
+ FAB – Floating Action Button untuk tambah menu (mobile)
+══════════════════════════════════════════════════════════ -->
+<button class="fab" id="fab-tambah" type="button" aria-label="Tambah menu baru" title="Tambah Menu Baru">
+  <span class="fab__icon">➕</span>
+  <span class="fab__label">Tambah Menu</span>
+</button>
+
 </body>
 </html>
 <?php mysqli_close($koneksi); ?>
